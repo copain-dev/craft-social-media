@@ -9,10 +9,17 @@
     "cms",
     "craftcms",
     "craft-plugin",
-    "social media"
+    "social media",
+    "social links",
+    "social networks",
+    "multi-site",
+    "platform management"
   ],
   "support": {
-    "email": "dev@copain.dev"
+    "email": "dev@copain.dev",
+    "issues": "https://github.com/copain-dev/craft-social-media/issues",
+    "source": "https://github.com/copain-dev/craft-social-media",
+    "docs": "https://github.com/copain-dev/craft-social-media/blob/main/README.md"
   },
   "require": {
     "php": ">=8.2",
