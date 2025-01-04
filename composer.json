@@ -1,8 +1,16 @@
 {
   "name": "copain/craft-social-media",
   "description": "A Craft CMS plugin for managing and organizing social media links directly from the Control Panel.",
+  "version": "1.0.0",
   "type": "craft-plugin",
   "license": "mit",
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "craft-plugin",
+    "social media"
+  ],
   "support": {
     "email": "dev@copain.dev"
   },
@@ -33,6 +41,7 @@
     "developer": "Copain",
     "developerUrl": "https://copain.dev",
     "documentationUrl": "https://github.com/copain-dev/craft-social-media",
+    "changelogUrl": "https://github.com/copain-dev/craft-social-media/blob/main/CHANGELOG.md",
     "class": "copain\\craftsocialmedia\\SocialMedia"
   },
   "scripts": {
