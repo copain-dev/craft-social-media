@@ -43,17 +43,27 @@
 								<div class="move icon" title="{{ 'Reorder'|t('app') }}" aria-label="{{ 'Reorder'|t('app') }}" role="button" data-move-y></div>
 							</td>
 							<td>
-								<div class="platform-icon" style="background-color: {{ craft.socialMedia.getColor(link.platform) }}">
-									{{ craft.socialMedia.getIcon(link.platform)|raw }}
+								<div class="platform-info">
+									<span class="platform-icon" style="background-color: {{ craft.socialMedia.getColor(link.platform) }}">
+										{{ craft.socialMedia.getIcon(link.platform)|raw }}
+									</span>
+									{{ craft.socialMedia.getPlatformLabel(link.platform) }}
 								</div>
-								{{ craft.socialMedia.getPlatformLabel(link.platform) }}
 							</td>
 							<td>{{ link.name }}</td>
 							<td>
 								<a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.url }}</a>
 							</td>
 							<td>
-								<span class="status {{ link.enabled ? 'live' : 'disabled' }}"></span>
+								<div class="status-wrapper">
+									<span class="status {{ link.enabled ? 'live' : 'disabled' }}"></span>
+									{{ link.enabled ? 'Enabled'|t('social-media') : 'Disabled'|t('social-media') }}
+									{% if not link.getPlatformEnabled() %}
+										<span class="platform-disabled-badge" title="{{ "Platform disabled"|t('social-media') }}">
+											{{ "Platform disabled"|t('social-media') }}
+										</span>
+									{% endif %}
+								</div>
 							</td>
 							<td class="thin">
 								<div class="btngroup">
@@ -74,6 +84,28 @@
 {% endblock %}
 
 {% css %}
+.platform-info {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.status-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.platform-disabled-badge {
+	display: inline-block;
+	background: #CF1124;
+	color: white;
+	font-size: 11px;
+	padding: 1px 5px;
+	border-radius: 3px;
+	margin-left: 4px;
+}
+
 .platform-icon {
 	display: inline-flex;
 	align-items: center;
@@ -81,8 +113,6 @@
 	width: 24px;
 	height: 24px;
 	border-radius: 4px;
-	margin-right: 8px;
-	vertical-align: middle;
 }
 
 .platform-icon svg {
@@ -107,13 +137,13 @@
 {% if links|length %}
 	{% js %}
 	$(document).ready(function() {
-			new Craft.AdminTable({
-				tableSelector: '#links',
-				noItemsSelector: '.zilch',
-				sortable: true,
-				reorderAction: 'social-media/social-media/reorder',
-				deleteAction: 'social-media/social-media/delete'
-			});
-		});
+						new Craft.AdminTable({
+							tableSelector: '#links',
+							noItemsSelector: '.zilch',
+							sortable: true,
+							reorderAction: 'social-media/social-media/reorder',
+							deleteAction: 'social-media/social-media/delete'
+						});
+					});
 	{% endjs %}
 {% endif %}

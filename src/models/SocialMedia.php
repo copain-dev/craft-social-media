@@ -4,6 +4,7 @@ namespace copain\craftsocialmedia\models;
 
 use Craft;
 use craft\base\Model;
+use copain\craftsocialmedia\SocialMedia as Plugin;
 
 class SocialMedia extends Model
 {
@@ -32,6 +33,15 @@ class SocialMedia extends Model
         if (!array_key_exists($this->$attribute, \copain\craftsocialmedia\config\PlatformConfig::$platforms)) {
             $this->addError($attribute, Craft::t('social-media', 'Invalid platform selected.'));
         }
+    }
+
+    /**
+     * Check if the platform is enabled in plugin settings
+     */
+    public function getPlatformEnabled(): bool
+    {
+        $settings = Plugin::getInstance()->getSettings();
+        return $settings->platforms[$this->platform] ?? true;
     }
 
     public function attributeLabels(): array

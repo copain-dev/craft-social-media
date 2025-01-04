@@ -16,6 +16,7 @@ use copain\craftsocialmedia\variables\SocialMediaVariable;
 use craft\services\Sites;
 use craft\events\DeleteSiteEvent;
 use copain\craftsocialmedia\records\SocialMediaRecord;
+use craft\events\ModelEvent;
 
 class SocialMedia extends Plugin
 {
@@ -78,6 +79,45 @@ class SocialMedia extends Plugin
                 ]);
             }
         );
+
+        // Add new event handler for settings changes
+        Event::on(
+            Plugin::class,
+            Plugin::EVENT_AFTER_SAVE_SETTINGS,
+            function(Event $event) {
+                if ($event->sender === $this) {
+                    $this->handlePlatformSettingsChange();
+                }
+            }
+        );
+    }
+
+    /**
+     * Handle platform settings changes by disabling links for disabled platforms
+     */
+    private function handlePlatformSettingsChange(): void
+    {
+        $settings = $this->getSettings();
+        $platforms = $settings->platforms;
+
+        // Get all disabled platforms
+        $disabledPlatforms = array_keys(array_filter($platforms, function($enabled) {
+            return !$enabled;
+        }));
+
+        if (!empty($disabledPlatforms)) {
+            // Disable all links for disabled platforms
+            SocialMediaRecord::updateAll(
+                ['enabled' => false],
+                ['platform' => $disabledPlatforms]
+            );
+
+            // Log the action
+            Craft::info(
+                'Disabled social media links for platforms: ' . implode(', ', $disabledPlatforms),
+                __METHOD__
+            );
+        }
     }
 
     protected function createSettingsModel(): ?Model
