@@ -19,11 +19,20 @@
       "copain\\craftsocialmedia\\": "src/"
     }
   },
+  "authors": [
+    {
+      "name": "Copain",
+      "homepage": "https://copain.dev",
+      "email": "dev@copain.dev",
+      "role": "Developer"
+    }
+  ],
   "extra": {
     "handle": "social-media",
     "name": "Social Media",
     "developer": "Copain",
-    "documentationUrl": "",
+    "developerUrl": "https://copain.dev",
+    "documentationUrl": "https://github.com/copain-dev/craft-social-media",
     "class": "copain\\craftsocialmedia\\SocialMedia"
   },
   "scripts": {

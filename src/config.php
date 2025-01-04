@@ -16,8 +16,6 @@ return [
             'label' => 'Example Platform',
             'color' => '#FF0000',
             'icon' => '<svg>...</svg>',
-            'urlFormat' => 'https://example.com/{username}',
-            'urlPattern' => '/^https?:\/\/(www\.)?example\.com\/.*$/',
         ],
         // Add more custom platforms here
     ],

@@ -40,7 +40,17 @@ class Install extends Migration
     public function safeDown(): bool
     {
         if ($this->db->tableExists('{{%socialmedia_links}}')) {
-            $this->dropForeignKey(null, '{{%socialmedia_links}}');
+            // Get the foreign key name first
+            $foreignKeys = $this->db->schema->getTableSchema('{{%socialmedia_links}}')->foreignKeys;
+            foreach ($foreignKeys as $name => $foreignKey) {
+                if (isset($foreignKey['sites'])) {
+                    // Drop the foreign key if it exists
+                    $this->dropForeignKey($name, '{{%socialmedia_links}}');
+                    break;
+                }
+            }
+
+            // Then drop the table
             $this->dropTable('{{%socialmedia_links}}');
         }
 
