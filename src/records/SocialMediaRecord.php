@@ -3,7 +3,6 @@
 namespace copain\craftsocialmedia\records;
 
 use craft\db\ActiveRecord;
-use yii\db\ActiveQueryInterface;
 
 class SocialMediaRecord extends ActiveRecord
 {

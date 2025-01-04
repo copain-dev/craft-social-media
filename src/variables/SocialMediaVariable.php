@@ -6,7 +6,6 @@ use Craft;
 use copain\craftsocialmedia\SocialMedia;
 use copain\craftsocialmedia\config\PlatformConfig;
 use craft\helpers\Template;
-use craft\elements\Entry;
 use copain\craftsocialmedia\records\SocialMediaRecord;
 
 class SocialMediaVariable

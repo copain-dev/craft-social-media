@@ -16,7 +16,7 @@ class Install extends Migration
                 'name' => $this->string()->notNull(),
                 'url' => $this->string()->notNull(),
                 'enabled' => $this->boolean()->defaultValue(true)->notNull(),
-                'sortOrder' => $this->integer()->notNull(),
+                'sortOrder' => $this->integer()->notNull()->defaultValue(0),
                 'siteId' => $this->integer()->notNull(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
@@ -32,6 +32,17 @@ class Install extends Migration
                 'CASCADE',
                 'CASCADE'
             );
+
+            // Set initial records to the primary site if any exist
+            if ($this->db->tableExists('{{%socialmedia_links}}')) {
+                $this->update(
+                    '{{%socialmedia_links}}',
+                    ['siteId' => Craft::$app->sites->getPrimarySite()->id],
+                    '',
+                    [],
+                    false
+                );
+            }
         }
 
         return true;
