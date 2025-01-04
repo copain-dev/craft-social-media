@@ -7,6 +7,7 @@ use copain\craftsocialmedia\SocialMedia;
 use copain\craftsocialmedia\config\PlatformConfig;
 use craft\helpers\Template;
 use craft\elements\Entry;
+use copain\craftsocialmedia\records\SocialMediaRecord;
 
 class SocialMediaVariable
 {
@@ -41,9 +42,33 @@ class SocialMediaVariable
         return PlatformConfig::getColor($platform);
     }
 
-    public function getLinks(Entry $entry = null): array
+    /**
+     * Get all social media links for the current site
+     */
+    public function getLinks(): array
     {
-        return SocialMedia::getInstance()->socialMediaService->getLinks($entry);
+        $links = SocialMediaRecord::find()
+            ->where([
+                'enabled' => true,
+                'siteId' => Craft::$app->getSites()->getCurrentSite()->id
+            ])
+            ->orderBy(['sortOrder' => SORT_ASC])
+            ->all();
+
+        // Format the links with platform info
+        return array_map(function($link) {
+            return [
+                'id' => $link->id,
+                'platform' => $link->platform,
+                'name' => $link->name,
+                'url' => $link->url,
+                'label' => PlatformConfig::getLabel($link->platform),
+                'color' => PlatformConfig::getColor($link->platform),
+                'icon' => PlatformConfig::getIcon($link->platform),
+                'enabled' => (bool)$link->enabled,
+                'sortOrder' => (int)$link->sortOrder
+            ];
+        }, $links);
     }
 
     public function getLinksBySiteId(int $siteId): array
