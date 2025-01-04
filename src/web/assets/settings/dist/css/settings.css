@@ -1,0 +1,101 @@
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.platform-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e3e5e8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.5;
+  position: relative;
+}
+
+.platform-item.active {
+  opacity: 1;
+  border-color: #cdd8e4;
+  background: #f3f7fc;
+}
+
+.platform-item.in-use:not(.active) {
+  border-color: #cf1124;
+  background: #fef4f4;
+}
+
+.platform-item:hover {
+  border-color: #cdd8e4;
+  background: #f9f9f9;
+}
+
+.platform-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.platform-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.platform-icon path {
+  fill: white !important;
+}
+
+.platform-label {
+  font-size: 13px;
+  text-align: center;
+  color: #3f4d5a;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.platform-usage-badge {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00b007;
+}
+
+.platform-warning {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #cf1124;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.platform-item:hover .platform-warning {
+  opacity: 1;
+}
+
+.platform-warning:after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #cf1124;
+}

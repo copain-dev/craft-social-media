@@ -1,0 +1,72 @@
+{% import "_includes/forms" as forms %}
+
+{% set platformOptions = [] %}
+{% set usedPlatforms = craft.socialMedia.getUsedPlatforms() %}
+
+{% for platform, config in craft.socialMedia.getPlatformConfig() %}
+	{% if settings.platforms[platform] ?? true %}
+		{% if settings.allowMultipleLinks
+			or platform not in usedPlatforms
+			or (link.id and link.platform == platform)
+		%}
+			{% set platformOptions = platformOptions|merge([{
+				label: config.label,
+				value: platform
+			}]) %}
+		{% endif %}
+	{% endif %}
+{% endfor %}
+
+{{ forms.selectField({
+    label: "Platform"|t('social-media'),
+    id: 'platform',
+    name: 'platform',
+    options: platformOptions,
+    value: link.platform,
+    required: true,
+    errors: link.getErrors('platform'),
+    fieldClass: link.hasErrors('platform') ? 'field has-errors' : 'field',
+    inputClass: link.hasErrors('platform') ? 'select fullwidth errors' : 'select fullwidth',
+    instructions: "Select the social media platform"|t('social-media')
+}) }}
+
+{{ forms.textField({
+    label: "Label"|t('social-media'),
+    id: 'name',
+    name: 'name',
+    value: link.name,
+    first: true,
+    required: true,
+    errors: link.getErrors('name'),
+    fieldClass: link.hasErrors('name') ? 'field first has-errors' : 'field first',
+    inputClass: link.hasErrors('name') ? 'text fullwidth errors' : 'text fullwidth',
+    instructions: "What this link will be called in the control panel."|t('social-media')
+}) }}
+
+{{ forms.textField({
+    label: "URL"|t('social-media'),
+    id: 'url',
+    name: 'url',
+    value: link.url,
+    type: 'url',
+    required: true,
+    errors: link.getErrors('url'),
+    fieldClass: link.hasErrors('url') ? 'field has-errors' : 'field',
+    inputClass: link.hasErrors('url') ? 'text fullwidth errors' : 'text fullwidth',
+    instructions: "The URL for this social media link."|t('social-media')
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Enabled"|t('social-media'),
+    instructions: "When disabled, this link will not be shown on the frontend"|t('social-media'),
+    id: 'enabled',
+    name: 'enabled',
+    on: link.enabled ?? true
+}) }}
+
+<div class="buttons">
+	<button type="submit" class="btn big submit">
+		{{ submitLabel }}
+	</button>
+	<a href="{{ cpUrl('social-media', { site: currentSite.handle }) }}" class="btn">{{ "Cancel"|t('social-media') }}</a>
+</div>

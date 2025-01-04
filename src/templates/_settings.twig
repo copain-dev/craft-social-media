@@ -1,0 +1,79 @@
+{% do view.registerAssetBundle('copain\\craftsocialmedia\\web\\assets\\settings\\SettingsAsset') %}
+
+{% import "_includes/forms" as forms %}
+
+<h2>{{ "Social Media Platforms"|t('social-media') }}</h2>
+<p>{{ "Enable or disable social media platforms that users can add links for."|t('social-media') }}</p>
+
+<div class="buttons">
+	<button type="button" class="btn" data-enable-all>{{ "Enable All"|t('social-media') }}</button>
+	<button type="button" class="btn" data-disable-all>{{ "Disable All"|t('social-media') }}</button>
+</div>
+
+<div class="platform-grid">
+	{% for platform, config in craft.socialMedia.getPlatformConfig() %}
+		{% set isUsed = platform in craft.socialMedia.getUsedPlatforms() %}
+		<div class="platform-item{% if settings.platforms[platform] ?? true %} active{% endif %}{% if isUsed %} in-use{% endif %}" data-platform="{{ platform }}">
+			<input type="hidden" name="platforms[{{ platform }}]" value="{{ settings.platforms[platform] ?? true ? '1' : '' }}">
+			<div class="platform-icon" style="background-color: {{ config.color }}">
+				{{ config.icon|raw }}
+			</div>
+			<div class="platform-label">
+				{{ config.label }}
+				{% if isUsed %}
+					<div class="platform-usage-badge" title="{{ "This platform is currently in use"|t('social-media') }}"></div>
+				{% endif %}
+			</div>
+			{% if isUsed and not (settings.platforms[platform] ?? true) %}
+				<div class="platform-warning">
+					{{ "Warning: This platform is in use but disabled"|t('social-media') }}
+				</div>
+			{% endif %}
+		</div>
+	{% endfor %}
+</div>
+
+<hr>
+
+{{ forms.lightswitchField({
+	label: "Allow multiple links per platform"|t('social-media'),
+	instructions: "When enabled, multiple links can be created for the same platform"|t('social-media'),
+	id: 'allowMultipleLinks',
+	name: 'allowMultipleLinks',
+	on: settings.allowMultipleLinks,
+	errors: settings.getErrors('allowMultipleLinks')
+}) }}
+
+{% js %}
+document.addEventListener('DOMContentLoaded', () => {
+	const $platforms = document.querySelectorAll('.platform-item');
+	const $enableAll = document.querySelector('[data-enable-all]');
+	const $disableAll = document.querySelector('[data-disable-all]');
+
+	$platforms.forEach($platform => {
+		$platform.addEventListener('click', () => {
+			const $input = $platform.querySelector('input');
+			const isActive = $platform.classList.toggle('active');
+			$input.value = isActive ? '1' : '';
+		});
+	});
+
+	$enableAll.addEventListener('click', () => {
+		$platforms.forEach($platform => {
+			if (!$platform.classList.contains('active')) {
+				$platform.classList.add('active');
+				$platform.querySelector('input').value = '1';
+			}
+		});
+	});
+
+	$disableAll.addEventListener('click', () => {
+		$platforms.forEach($platform => {
+			if ($platform.classList.contains('active')) {
+				$platform.classList.remove('active');
+				$platform.querySelector('input').value = '';
+			}
+		});
+	});
+});
+{% endjs %}

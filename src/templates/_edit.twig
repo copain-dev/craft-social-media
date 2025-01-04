@@ -1,0 +1,7 @@
+{{ forms.lightswitch({
+    label: "Enabled"|t('social-media'),
+    id: 'enabled',
+    name: 'enabled',
+    on: link.enabled ?? true,
+    errors: link.getErrors('enabled')|default(null)
+}) }}

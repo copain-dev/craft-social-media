@@ -1,0 +1,119 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "Social Media"|t('social-media') %}
+
+{% block actionButton %}
+	<a href="{{ cpUrl('social-media/new', { site: currentSite.handle }) }}" class="btn submit add icon">{{ "New link"|t('social-media') }}</a>
+{% endblock %}
+
+{% block sidebar %}
+	{% if craft.app.isMultiSite %}
+		<nav>
+			<ul>
+				{% for site in sites %}
+					<li>
+						<a href="{{ cpUrl('social-media', { site: site.handle }) }}" {% if site.id == currentSite.id %} class="sel" {% endif %}>
+							{{ site.name }}
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</nav>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+	{% if links|length %}
+		<div class="tableview">
+			<table id="links" class="data fullwidth">
+				<thead>
+					<tr>
+						<th class="thin"></th>
+						<th scope="col">{{ "Platform"|t('social-media') }}</th>
+						<th scope="col">{{ "Label"|t('social-media') }}</th>
+						<th scope="col">{{ "URL"|t('social-media') }}</th>
+						<th scope="col">{{ "Status"|t('social-media') }}</th>
+						<th class="thin"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for link in links %}
+						<tr data-id="{{ link.id }}" data-name="{{ link.name }}" data-site-id="{{ currentSite.id }}">
+							<td class="thin">
+								<div class="move icon" title="{{ 'Reorder'|t('app') }}" aria-label="{{ 'Reorder'|t('app') }}" role="button" data-move-y></div>
+							</td>
+							<td>
+								<div class="platform-icon" style="background-color: {{ craft.socialMedia.getColor(link.platform) }}">
+									{{ craft.socialMedia.getIcon(link.platform)|raw }}
+								</div>
+								{{ craft.socialMedia.getPlatformLabel(link.platform) }}
+							</td>
+							<td>{{ link.name }}</td>
+							<td>
+								<a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.url }}</a>
+							</td>
+							<td>
+								<span class="status {{ link.enabled ? 'live' : 'disabled' }}"></span>
+							</td>
+							<td class="thin">
+								<div class="btngroup">
+									<a class="btn small" href="{{ cpUrl('social-media/edit/' ~ link.id, { site: currentSite.handle }) }}">{{ "Edit"|t('social-media') }}</a>
+									<button type="button" class="btn small delete" data-id="{{ link.id }}" title="{{ 'Delete'|t('social-media') }}">{{ "Delete"|t('social-media') }}</button>
+								</div>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% else %}
+		<div class="zilch">
+			<p>{{ "No social media links exist yet."|t('social-media') }}</p>
+		</div>
+	{% endif %}
+{% endblock %}
+
+{% css %}
+.platform-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 4px;
+	margin-right: 8px;
+	vertical-align: middle;
+}
+
+.platform-icon svg {
+	width: 16px;
+	height: 16px;
+}
+
+.platform-icon path {
+	fill: white !important;
+}
+
+.btngroup {
+	display: flex;
+	gap: 4px;
+}
+
+.delete-form {
+	display: inline-block;
+}
+{% endcss %}
+
+{% if links|length %}
+	{% js %}
+	$(document).ready(function() {
+			new Craft.AdminTable({
+				tableSelector: '#links',
+				noItemsSelector: '.zilch',
+				sortable: true,
+				reorderAction: 'social-media/social-media/reorder',
+				deleteAction: 'social-media/social-media/delete'
+			});
+		});
+	{% endjs %}
+{% endif %}

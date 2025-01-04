@@ -1,0 +1,18 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "New Link"|t('social-media') %}
+
+{% block content %}
+	<form method="post" novalidate accept-charset="UTF-8">
+		{{ csrfInput() }}
+		{{ actionInput('social-media/social-media/save') }}
+		{{ redirectInput('social-media') }}
+		{{ hiddenInput('site', currentSite.handle) }}
+
+		{% include "social-media/_includes/fields" with {
+			link: link,
+			settings: settings,
+			submitLabel: 'Create'|t('social-media')
+		} %}
+	</form>
+{% endblock %}
