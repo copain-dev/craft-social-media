@@ -1,7 +1,8 @@
 {% import "_includes/forms" as forms %}
 
+{% set siteId = currentSite.id %}
 {% set platformOptions = [] %}
-{% set usedPlatforms = craft.socialMedia.getUsedPlatforms() %}
+{% set usedPlatforms = craft.socialMedia.getUsedPlatforms(siteId) %}
 
 {% for platform, config in craft.socialMedia.getPlatformConfig() %}
 	{% if settings.platforms[platform] ?? true %}
@@ -17,18 +18,31 @@
 	{% endif %}
 {% endfor %}
 
-{{ forms.selectField({
-    label: "Platform"|t('social-media'),
-    id: 'platform',
-    name: 'platform',
-    options: platformOptions,
-    value: link.platform,
-    required: true,
-    errors: link.getErrors('platform'),
-    fieldClass: link.hasErrors('platform') ? 'field has-errors' : 'field',
-    inputClass: link.hasErrors('platform') ? 'select fullwidth errors' : 'select fullwidth',
-    instructions: "Select the social media platform"|t('social-media')
-}) }}
+{% if platformOptions|length > 0 %}
+	{{ forms.selectField({
+        label: "Platform"|t('social-media'),
+        id: 'platform',
+        name: 'platform',
+        options: platformOptions,
+        value: link.platform,
+        required: true,
+        errors: link.getErrors('platform'),
+        fieldClass: link.hasErrors('platform') ? 'field has-errors' : 'field',
+        inputClass: link.hasErrors('platform') ? 'select fullwidth errors' : 'select fullwidth',
+        instructions: "Select the social media platform"|t('social-media')
+    }) }}
+{% else %}
+	<div class="field">
+		<div class="heading">
+			<label>{{ "Platform"|t('social-media') }}</label>
+		</div>
+		<div class="input">
+			<div class="notice">
+				{{ "No platforms available - all platforms are already in use for this site."|t('social-media') }}
+			</div>
+		</div>
+	</div>
+{% endif %}
 
 {{ forms.textField({
     label: "Label"|t('social-media'),
@@ -65,7 +79,7 @@
 }) }}
 
 <div class="buttons">
-	<button type="submit" class="btn big submit">
+	<button type="submit" class="btn big submit{% if platformOptions|length == 0 %} disabled{% endif %}" {% if platformOptions|length == 0 %} disabled {% endif %}>
 		{{ submitLabel }}
 	</button>
 	<a href="{{ cpUrl('social-media', { site: currentSite.handle }) }}" class="btn">{{ "Cancel"|t('social-media') }}</a>

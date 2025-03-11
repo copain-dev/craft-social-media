@@ -88,14 +88,21 @@ class SocialMediaService extends Component
         }, $links);
     }
 
-    public function getUsedPlatforms(): array
+    public function getUsedPlatforms(?int $siteId = null): array
     {
-        return SocialMediaRecord::find()
+        // Use direct query to avoid any caching issues
+        $query = (new Query())
             ->select(['platform'])
-            ->column();
+            ->from('{{%socialmedia_links}}');
+
+        if ($siteId !== null) {
+            $query->where(['siteId' => $siteId]);
+        }
+
+        return $query->column();
     }
 
-    public function isValidPlatform(string $platform, ?int $excludeId = null): bool
+    public function isValidPlatform(string $platform, ?int $excludeId = null, ?int $siteId = null): bool
     {
         if (SocialMedia::getInstance()->getSettings()->allowMultipleLinks) {
             return true;
@@ -105,6 +112,12 @@ class SocialMediaService extends Component
 
         if ($excludeId !== null) {
             $query->andWhere(['not', ['id' => $excludeId]]);
+        }
+
+        if ($siteId !== null) {
+            $query->andWhere(['siteId' => $siteId]);
+        } else {
+            $query->andWhere(['siteId' => Craft::$app->getSites()->getCurrentSite()->id]);
         }
 
         return !$query->exists();

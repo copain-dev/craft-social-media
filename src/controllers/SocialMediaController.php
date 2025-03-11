@@ -52,6 +52,12 @@ class SocialMediaController extends Controller
         $site = Craft::$app->getSites()->getSiteByHandle($siteHandle)
             ?? Craft::$app->getSites()->getCurrentSite();
 
+        // Debug logging
+        Craft::info(
+            "Editing link in site: {$site->handle} (ID: {$site->id})",
+            __METHOD__
+        );
+
         if ($id) {
             $record = SocialMediaRecord::findOne($id);
             if (!$record) {
@@ -114,7 +120,7 @@ class SocialMediaController extends Controller
                 ->one();
 
             if ($existingLink && !$settings->allowMultipleLinks) {
-                $link->addError('platform', Craft::t('social-media', 'This platform is already in use.'));
+                $link->addError('platform', Craft::t('social-media', 'This platform is already in use for this site.'));
                 return $this->renderTemplate('social-media/new.twig', [
                     'link' => $link,
                     'settings' => $settings,

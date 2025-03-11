@@ -20,7 +20,7 @@ use craft\events\ModelEvent;
 
 class SocialMedia extends Plugin
 {
-    public string $schemaVersion = '1.0.0';
+    public string $schemaVersion = '1.0.2';
     public bool $hasCpSettings = true;
     public bool $hasCpSection = true;
     public static SocialMedia $plugin;

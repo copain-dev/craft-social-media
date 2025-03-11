@@ -85,8 +85,25 @@ class SocialMediaVariable
         return SocialMedia::getInstance()->isPlatformEnabled($platform);
     }
 
-    public function getUsedPlatforms(): array
+    public function getUsedPlatforms(?int $siteId = null): array
     {
-        return SocialMedia::getInstance()->socialMediaService->getUsedPlatforms();
+        if ($siteId === null) {
+            $siteId = Craft::$app->getSites()->getCurrentSite()->id;
+        }
+
+        // Add logging for debugging
+        Craft::info(
+            "Getting used platforms for site ID: {$siteId}",
+            __METHOD__
+        );
+
+        $platforms = SocialMedia::getInstance()->socialMediaService->getUsedPlatforms($siteId);
+
+        Craft::info(
+            "Found platforms: " . implode(', ', $platforms),
+            __METHOD__
+        );
+
+        return $platforms;
     }
 }

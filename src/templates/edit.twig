@@ -8,10 +8,12 @@
 		{{ actionInput('social-media/social-media/save') }}
 		{{ redirectInput('social-media') }}
 		{{ hiddenInput('id', link.id) }}
+		{{ hiddenInput('site', currentSite.handle) }}
 
 		{% include "social-media/_includes/fields" with {
 			link: link,
 			settings: settings,
+			currentSite: currentSite,
 			submitLabel: 'Save'|t('social-media')
 		} %}
 	</form>
